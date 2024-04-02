@@ -1,5 +1,6 @@
 using api;
 using api.Hub;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,22 @@ builder.Services.AddSignalR();
 builder.Services.AddSingleton<IDictionary<string, UserRoomConnection>>(IServiceProvider =>
         new Dictionary<string, UserRoomConnection>());
 
+builder.Services.AddCors(Options =>
+{
+    Options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+
 var app = builder.Build();
+
+app.UseRouting();
+
+app.UseCors();
 
 app.UseEndpoints(endpoint =>
 {
