@@ -25,7 +25,7 @@ public class ChatHub : Microsoft.AspNetCore.SignalR.Hub
 
     public async Task SendMessage(string message)
     {
-        if (_connection.TryGetValue(Context.ConnectionId, out UserRoomConnection userRoomConnection))
+        if (_connection.TryGetValue(Context.ConnectionId, out UserRoomConnection? userRoomConnection))
         {
             await Clients.Group(userRoomConnection.Room!)
                 .SendAsync("ReceiveMessage", userRoomConnection.User, message, DateTime.Now);
@@ -34,7 +34,7 @@ public class ChatHub : Microsoft.AspNetCore.SignalR.Hub
 
     public override Task OnDisconnectedAsync(Exception? exp)
     {
-        if (!_connection.TryGetValue(Context.ConnectionId, out UserRoomConnection roomConnection))
+        if (!_connection.TryGetValue(Context.ConnectionId, out UserRoomConnection? roomConnection))
         {
             return base.OnDisconnectedAsync(exp);
         }
